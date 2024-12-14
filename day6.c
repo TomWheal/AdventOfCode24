@@ -7,13 +7,11 @@
 #define SIZE_Y 130
 #define GUARD '^'
 #define OBJECT '#'
-#define MAX_MOVES 60000
+#define MAX_MOVES 6000
 
 int main(void) {
     printf("Day Five\n");
-    FILE* fptr;
-
-    fptr = fopen("test.txt", "r");
+    FILE* fptr = fopen("day6.txt", "r");
     if (fptr == NULL) {
         printf("Error opening file\n");
         return 1;
@@ -23,10 +21,10 @@ int main(void) {
     char line[500];
     char *pch;
     char *pchB;
-    long i =0;
+    int i =0;
     int dir = 0; // 0 North 1 East 2 South 3 West
-    int gaurdX;
-    int gaurdY;
+    int gaurdX = 0;
+    int gaurdY = 0;
     int moves[SIZE_Y][SIZE_X];
     int hist[3][MAX_MOVES];
     for (int i =0;i<SIZE_Y;i++)
@@ -94,9 +92,9 @@ int main(void) {
 
     for (int y =0; y<SIZE_Y; y++)
         for (int x =0; x<SIZE_X; x++){
-            if(map[x][y]!=GUARD&map[x][y]!=OBJECT&moves[x][y]){
+            if(moves[x][y]){
                 map[x][y] = OBJECT;
-                printf("Placing Object at %d,%d\n",x,y);
+                //printf("Placing Object at %d,%d\n",x,y);
                 dir = 0;
                 gaurdX =guardStartX;
                 gaurdY = guardStartY;
@@ -141,26 +139,15 @@ int main(void) {
                         if(dir == hist[0][j] && gaurdX == hist[2][j] && gaurdY == hist[1][j]){
                             block++;
                             flag = 1;
-                            printf("Found Loop \n");
+                            //printf("Found Loop \n");
                             break;
                         }
-
-                    
-                    
-                    
-                    
-                    //printf("Move: DIR%d,X%d,Y%d\n",dir,gaurdX,gaurdY);
 
                 }while(gaurdX>=0 & gaurdX<SIZE_X & gaurdY>=0 & gaurdY<SIZE_Y & flag ==0);
 
             map[x][y] = '.';
-
-
-
-            }
-                
-
         }
+    }
 
 
     printf("\n");
