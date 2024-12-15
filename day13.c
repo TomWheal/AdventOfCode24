@@ -7,33 +7,32 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <math.h>
 
 typedef int64_t i64;
 typedef uint64_t u64;
 
-#define MAX_TRY 100000000
 #define A_COST 3
 #define B_COST 1
 
 
-u64 solve(i64 a_x,i64 a_y,i64 b_x,i64 b_y,i64 x_prize,i64 y_prize) {
-  // Prioritise B as its cheaper
-  u64 cnta = 0;
-  u64 cntb = 0;
+long solve(i64 xa,i64 ya,i64 xb,i64 yb,i64 xp,i64 yp) {
 
+    i64 a1  = (xp*yb - yp*xb);
+    i64 a2 = ( xa*yb - ya*xb );
 
-    cnta = (x_prize*b_y - y_prize*b_x) / (a_x*b_y - a_y*b_x);
-    cntb = (x_prize*a_y - y_prize*a_x) / (b_x*a_y - b_y*a_x);
-    //cnta = (x_prize - cntb*b_x)/a_x;
+    i64  b1  =  (xp*ya - yp*xa);
+    i64  b2 =    (xb*ya - yb*xa);
 
-  if (cnta*a_x +cntb*b_x == x_prize) {
-    if (cnta*a_y +cntb*b_y == y_prize) {
-      return 3*cnta + cntb;
+    if (a1%a2 ==0 && b1%b2 ==0) {
+      a1 = a1/a2;
+      b1 = b1/b2;
+      if (a1 >=0 && b1 >=0) {
+        printf("a1 = %ld, b1 = %ld\n", a1, b1);
+        return 3*a1 + b1;
+      }
     }
-
-  }
-  return 0;
-
+   return 0;
 }
 
 int main(void) {
@@ -45,15 +44,15 @@ int main(void) {
     return 1;
   }
 
-  i64 a_x = 0;
-  i64 b_x = 0;
-  i64 a_y = 0;
-  i64 b_y = 0;
+  i64 xa = 0;
+  i64 xb = 0;
+  i64 ya = 0;
+  i64 yb = 0;
 
-  i64 x_prize = 0;
-  i64 y_prize = 0;
-  u64 t1 = 0;
-  u64 t2 = 0;
+  i64 xp = 0;
+  i64 yp = 0;
+  i64 t1 = 0;
+  i64 t2 = 0;
 
   char line[1000];
   char * pch;
@@ -61,34 +60,41 @@ int main(void) {
     if (line[7] == 'A') {
       pch = strtok(line, "+");
       pch = strtok(NULL, ",");
-      a_x = strtoll(pch, NULL, 10);
+      xa = strtoll(pch, NULL, 10);
       pch = strtok(NULL, "+");
       pch = strtok(NULL, "+");
-      a_y = strtoll(pch, NULL, 10);
+      ya = strtoll(pch, NULL, 10);
     } else
     if (line[7] == 'B') {
       pch = strtok(line, "+");
       pch = strtok(NULL, ",");
-      b_x = strtoll(pch, NULL, 10);
+      xb = strtoll(pch, NULL, 10);
       pch = strtok(NULL, "+");
       pch = strtok(NULL, "+");
-      b_y = strtoll(pch, NULL, 10);
+      yb = strtoll(pch, NULL, 10);
     }
     else
     if (line[0] == 'P') {
       pch = strtok(line, "=");
       pch = strtok(NULL, ",");
-      x_prize = strtoll(pch, NULL, 10) ;
+      xp = strtoll(pch, NULL, 10) ;
       pch = strtok(NULL, "=");
       pch = strtok(NULL, "=");
-      y_prize = strtoll(pch, NULL, 10) ;
-      t1 += solve(a_x, a_y, b_x, b_y, x_prize, y_prize);
-      t2 += solve(a_x, b_y, b_x, a_y, x_prize+10000000000000, y_prize+10000000000000);
+      yp = strtoll(pch, NULL, 10) ;
+      printf("xa = %ld, xb = %ld\n", xa, xb);
+      printf("ya = %ld, yb = %ld\n", ya, yb);
+      printf("xp = %ld\n", xp);
+      printf("yp = %ld\n", yp);
+      t1 += solve(xa, ya, xb, yb, xp, yp);
+      xp += 10000000000000;
+      yp += 10000000000000;
+      t2 += solve(xa, ya, xb, yb, xp, yp);
+
     }
 
   }
-    printf("Part 1: %llu\n", t1);
-  printf("Part 2: %llu\n", t2);
+    printf("Part 1: %lli\n", t1);
+  printf("Part 2: %lli\n", t2);
   fclose(fptr);
   return 0;
 }
